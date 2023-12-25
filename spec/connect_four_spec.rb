@@ -5,6 +5,7 @@ describe ConnectFour do
   PLAYER1_SYMBOL = described_class::PLAYER1_SYMBOL
   EMPTY_SYMBOL = described_class::EMPTY_SYMBOL
   PLAYER2_SYMBOL = described_class::PLAYER2_SYMBOL
+  TOTAL_CELLS = 6 * 7
   p1 = "Rahib"
   p2 = "Pranav"
   let(:create_instance) {described_class.new(p1,p2)}
@@ -13,7 +14,8 @@ describe ConnectFour do
     context 'when game starts' do
       subject(:game_start) {create_instance}
       it 'contains same element all over the board' do
-        expect(all_same?(game_start.board)).to be true
+        result  = game_start.board.all? {|row| row.all?(EMPTY_SYMBOL)}
+        expect(result).to be true
       end
     end
 
@@ -56,10 +58,9 @@ describe ConnectFour do
       subject(:game_move) {create_instance}
       it 'should not affect other cells' do
         game_move.drop_coin(0)
+        number_of_empty_symbol = game_move.board.reduce(0) {|acc, row| acc + row.count(EMPTY_SYMBOL)}
         expect(game_move.board[-1][0]).to_not eq(EMPTY_SYMBOL)
-        temp_board = game_move.board
-        temp_board[-1][0] = EMPTY_SYMBOL
-        expect(all_same?(temp_board)).to be true
+        expect(number_of_empty_symbol).to eq(TOTAL_CELLS - 1)
       end
     end
     context 'when player drops two coins' do
@@ -71,8 +72,106 @@ describe ConnectFour do
       end
     end
   end
-end
 
-def all_same?(arr)
-  arr.all? {|row| row.all?(EMPTY_SYMBOL)}
+
+
+
+
+  describe '#check_diagonal' do
+    subject(:game_diagonal_win) {create_instance}
+    let(:grid) {game_diagonal_win.instance_variable_get(:@board)}
+    context 'when last winning move is at the upper right' do
+      it 'returns true' do
+        4.times {|i| grid[-1 - i][i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-4,3])).to be true
+      end
+    end
+    context 'when last winning move is at the upper left' do
+      it 'returns true' do
+        4.times {|i| grid[-1 - i][3 - i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-4,0])).to be true
+      end
+    end
+    context 'when last winning move is at the bottom right ' do
+      it 'returns true' do
+        4.times {|i| grid[-1 - i][3 - i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-1,3])).to be true
+      end
+    end
+    context 'when last winning move is at the bottom left' do
+      it 'returns true' do
+        4.times {|i| grid[-1 - i][i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-1,0])).to be true
+      end
+    end
+
+    context 'when last winning move is somewhere in the middle of diagonal' do
+      it 'returns true' do
+        4.times {|i| grid[-1 - i][i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-3,2])).to be true
+      end
+    end
+
+    context 'when player didnt won by diagonal' do
+      it 'returns false' do
+        3.times {|i| grid[-1 - i][i] = PLAYER1_SYMBOL}
+        expect(game_diagonal_win.check_diagonal([-2,1])).to be false
+      end
+    end
+  end
+
+
+
+
+
+  describe '#check_horizontal' do
+    subject(:game_horizontal_win) {create_instance}
+    let(:grid) {game_horizontal_win.instance_variable_get(:@board)}
+    context 'when last winning move is at the right' do
+      it 'returns true' do
+        4.times {|i| grid[-1][i] = PLAYER1_SYMBOL}
+        expect(game_horizontal_win.check_horizontal([-1,3])).to be true
+      end
+    end
+    context 'when last winning move is at the left' do
+      it 'returns true' do
+        4.times {|i| grid[-1][3 - i] = PLAYER1_SYMBOL}
+        expect(game_horizontal_win.check_horizontal([-1,0])).to be true
+      end
+    end
+
+    context 'when last winning move is somewhere in the middle' do
+      it 'returns true' do
+        4.times {|i| grid[-1][i] = PLAYER1_SYMBOL}
+        expect(game_horizontal_win.check_horizontal([-1,1])).to be true
+      end
+    end
+    context 'when player didnt won by horizontal' do
+      it 'returns false' do
+        3.times {|i| grid[-1][i] = PLAYER1_SYMBOL}
+        expect(game_horizontal_win.check_horizontal([-1,1])).to be true
+      end
+    end
+  end
+
+
+
+
+
+  describe '#check_vertical' do
+    subject(:game_vertical_win) {create_instance}
+    let(:grid) {game_vertical_win.instance_variable_get(:@board)}
+    context 'when last winning move is at the top' do
+      it 'returns true' do
+        4.times {|i| grid[-1-i][0] = PLAYER1_SYMBOL}
+        expect(game_vertical_win.check_vertical([-4,0])).to be true
+      end
+    end
+    context 'when player didnt won by vertical move' do
+      it 'returns false' do
+        3.times {|i| grid[-1-i][0] = PLAYER1_SYMBOL}
+        expect(game_vertical_win.check_vertical([-3,0])).to be false
+      end
+    end
+  end
 end

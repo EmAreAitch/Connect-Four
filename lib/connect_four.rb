@@ -11,7 +11,7 @@ class ConnectFour
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
-    @board = [[EMPTY_SYMBOL]*7] * 6
+    @board = Array.new(6) {Array.new(7,EMPTY_SYMBOL)}
     @current_coin = 0
   end
 
