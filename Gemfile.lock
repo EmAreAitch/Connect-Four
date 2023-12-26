@@ -5,6 +5,8 @@ GEM
     curses (1.4.4)
     diff-lcs (1.5.0)
     highline (2.1.0)
+    pastel (0.8.0)
+      tty-color (~> 0.5)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -18,6 +20,17 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
+    tty-color (0.6.0)
+    tty-cursor (0.7.1)
+    tty-prompt (0.23.1)
+      pastel (~> 0.8)
+      tty-reader (~> 0.8)
+    tty-reader (0.9.0)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      wisper (~> 2.0)
+    tty-screen (0.8.2)
+    wisper (2.0.1)
 
 PLATFORMS
   ruby
@@ -28,6 +41,7 @@ DEPENDENCIES
   curses (~> 1.4)
   highline (~> 2.1)
   rspec (~> 3.12)
+  tty-prompt (~> 0.23.1)
 
 BUNDLED WITH
    2.5.3

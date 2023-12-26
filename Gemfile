@@ -10,3 +10,5 @@ gem "curses", "~> 1.4"
 
 gem "highline", "~> 2.1"
 gem "algorithms", "~> 1.0"
+
+gem "tty-prompt", "~> 0.23.1"

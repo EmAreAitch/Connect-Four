@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'tty-prompt'
 
 class ConnectFour
   attr_reader :player1, :player2, :board
@@ -8,11 +9,12 @@ class ConnectFour
   PLAYER2_SYMBOL = '🟡'
   SYMBOL_CYCLE = [PLAYER1_SYMBOL, PLAYER2_SYMBOL]
 
-  def initialize(player1, player2)
+  def initialize(player1 = 'Player1', player2 = 'Player2')
     @player1 = player1
     @player2 = player2
     @board = Array.new(6) {Array.new(7,EMPTY_SYMBOL)}
     @current_token = 0
+    @prompt = TTY::Prompt.new
   end
 
   def drop_token(column_index)
@@ -50,6 +52,13 @@ class ConnectFour
     bottom = 0
     3.times {|i| (safe_board_get(r+i+1,c) == token) ? bottom += 1 : break}
     return bottom + 1 >= 4
+  end
+
+  def get_player_choice(msg,range)
+    @prompt.ask(msg, convert: :int) do |q|
+      q.in = range
+      q.messages[:range?] = "Choice must be within #{range}"
+    end
   end
   private
 
